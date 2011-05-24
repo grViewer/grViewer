@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="@string/category1">
+    <EditTextPreference
+         android:key="etpID_key"
+         android:title="@string/etpID_title"
+         android:summary="@string/etpID_summary"
+         android:dialogTitle="@string/etpID_dialog_title"
+         android:defaultValue=" " />
+    <EditTextPreference
+         android:key="etpPass_key"
+         android:title="@string/etpPass_title"
+         android:summary="@string/etpPass_summary"
+         android:dialogTitle="@string/etpPass_dialog_title"
+         android:password="true"
+         android:defaultValue=" "/>
+	<CheckBoxPreference
+		android:key="checkbox_key"
+		android:title="@string/checkbox_title"
+		android:summary="@string/checkbox_summary" />
+    </PreferenceCategory>
+</PreferenceScreen>

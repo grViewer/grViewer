@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GoogleReaderViewer</string>
+    <string name="category1">設定</string>
+    <string name="etpID_title">Gmailのメールアドレス</string>
+    <string name="etpID_summary">メールアドレス</string>
+    <string name="etpID_dialog_title">Gmailのメールアドレス</string>
+    <string name="etpPass_title">パスワード</string>
+    <string name="etpPass_summary">パスワード</string>
+    <string name="etpPass_dialog_title">パスワード</string>
+    <string name="lpCount_title">取得件数</string>
+    <string name="lpCount_summary">取得件数</string>
+    <string name="lpCount_dialog_title">取得件数</string>
+    <string name="checkbox_title">LDRFullFeed機能を使用する。</string>
+    <string name="checkbox_summary">LDRFullFeed機能を使用する場合は下記のボタンを押下しLDRFullFeedを更新してください。</string>
+
+</resources>
