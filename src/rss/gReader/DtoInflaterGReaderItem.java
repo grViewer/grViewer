@@ -67,12 +67,39 @@ public class DtoInflaterGReaderItem implements Serializable{
     public void setLink(String link) {this.link = link;}
 
     public String getRead() {return read;}
+    public boolean getRead_boolean() {
+    	if (read.equals("1")){
+        	return true;
+
+    	}else{
+        	return false;
+
+    	}
+	}
     public void setRead(String read) {this.read = read;}
 
     public String getStar() {return star;}
+    public boolean getStar_boolean() {
+    	if (star.equals("1")){
+        	return true;
+
+    	}else{
+        	return false;
+
+    	}
+	}
     public void setStar(String star) {this.star = star;}
 
     public String getLock() {return lock;}
+    public boolean getLock_boolean() {
+    	if (lock.equals("1")){
+        	return true;
+
+    	}else{
+        	return false;
+
+    	}
+	}
     public void setLock(String lock) {this.lock = lock;}
 
     public void setCursor(Cursor c) {

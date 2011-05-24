@@ -105,12 +105,17 @@ public class ItemDetailActivity extends Activity{
 		new Thread() {
 
         	public void run() {
+        		//Googleリーダの更新（既読へ）
     			Edit Edit = new Edit(DtoInflaterGReaderItem.getFeed(),
     								 DtoInflaterGReaderItem.getItemId(),
     								 Auth);
     	    	Edit.MarkRead();
+    	    	//DBの更新
+    	    	WriteDB wdb = new WriteDB(db);
+    	    	wdb.Update_gReaderItem_lock("1",DtoInflaterGReaderItem.get_id());
         	}
-        }.start();
+
+		}.start();
 
         //設定ファイルを読み込む
 		SharedPreferences myPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -163,23 +168,40 @@ public class ItemDetailActivity extends Activity{
 
         //後で見るボタン
         ToggleButton tbLock = (ToggleButton) findViewById(R.id.iButLock);
-        //tb.setChecked(false);       //OFFへ変更
+        tbLock.setChecked(DtoInflaterGReaderItem.getLock_boolean());
         //ToggleのCheckが変更したタイミングで呼び出されるリスナー
         tbLock.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             	//DBの更新
+    			final boolean Checked = isChecked;
+    			//別スレッドで処理する
+    			new Thread() {
 
+    	        	public void run() {
+    	        		String lock ="0";
+    	        		if (Checked){
+    	        			//スターを付ける
+    	        			lock ="1";
+    	        		}else{
+    	        			//スターを外す
+    	        			lock ="0";
+    	        		}
+    	    	    	//DBの更新
+    	    	    	WriteDB wdb = new WriteDB(db);
+    	    	    	wdb.Update_gReaderItem_lock(lock,DtoInflaterGReaderItem.get_id());
+    	        	}
+    	        }.start();
             }
         });
         //スター
         ToggleButton tbStar = (ToggleButton) findViewById(R.id.iButStar);
-        //tb.setChecked(false);       //OFFへ変更
+        tbStar.setChecked(DtoInflaterGReaderItem.getStar_boolean());
 
         //ToggleのCheckが変更したタイミングで呼び出されるリスナー
         tbStar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
     			final boolean Checked = isChecked;
-            	//Googleリーダの更新
+    			//別スレッドで処理する
     			new Thread() {
 
     	        	public void run() {
@@ -187,17 +209,23 @@ public class ItemDetailActivity extends Activity{
     	    					                  ,DtoInflaterGReaderItem.getItemId()
     	    					                  ,Auth);
     	        		String Subscription_Feed ="";
+    	        		String star ="0";
     	        		if (Checked){
     	        			//スターを付ける
     	        			Subscription_Feed = Constants.EDIT_SUBSCRIPTION_FEED_ADD;
+        	        		star ="1";
     	        		}else{
     	        			//スターを外す
     	        			Subscription_Feed = Constants.EDIT_SUBSCRIPTION_FEED_REMOVE;
+        	        		star ="0";
     	        		}
+    	            	//Googleリーダの更新
     	    	    	Edit.AddStar(Subscription_Feed);
+    	    	    	//DBの更新
+    	    	    	WriteDB wdb = new WriteDB(db);
+    	    	    	wdb.Update_gReaderItem_star(star,DtoInflaterGReaderItem.get_id());
     	        	}
     	        }.start();
-            	//DBの更新
             }
         });
         Button btnGlobe = (Button)findViewById(R.id.iButGlobe);

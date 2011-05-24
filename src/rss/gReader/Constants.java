@@ -120,7 +120,11 @@ public final class Constants {
 	// TRACKING_ITEM_LINK_USED = "#{PACKAGE}/tracking-item-link-used"
 	// TRACKING_KEPT_UNREAD = "#{PACKAGE}/tracking-kept-unread"
 
+    public static final String Space  =" ";
+    public static final String DB_type_text ="text";
+    public static final String DB_integer_PK_autoincrement ="integer primary key autoincrement";
 	//gReaderItemテーブル名
+    public static final String DB_gReaderItem_name ="gReaderItem";
     public static final String DB_gReaderItem_item_id_name ="_id";
     public static final String DB_gReaderItem_item_itemId_name = "itemId";
     public static final String DB_gReaderItem_item_itemPublished_name = "itemPublished";
@@ -133,6 +137,33 @@ public final class Constants {
     public static final String DB_gReaderItem_item_read_name = "read";
     public static final String DB_gReaderItem_item_star_name = "star";
     public static final String DB_gReaderItem_item_lock_name = "lock";
+
+	//gReaderInfoテーブル名
+    public static final String DB_gReaderInfo_name ="gReaderInfo";
+    public static final String DB_gReaderInfo_item_id_name ="_id";
+    public static final String DB_gReaderInfo_item_userId_name = "userId";
+    public static final String DB_gReaderInfo_item_lastUpdate_name = "lastUpdate";
+
+	//gReaderLDRFullFeedテーブル名
+    public static final String DB_gReaderLDRFullFeed_name ="gReaderLDRFullFeed";
+    public static final String DB_gReaderLDRFullFeed_item_id_name ="_id";
+    public static final String DB_gReaderLDRFullFeed_item_name_name ="name";
+    public static final String DB_gReaderLDRFullFeed_item_enc_name ="enc";
+    public static final String DB_gReaderLDRFullFeed_item_type_name ="type";
+    public static final String DB_gReaderLDRFullFeed_item_url_name ="url";
+    public static final String DB_gReaderLDRFullFeed_item_xpath_name ="xpath";
+	//gReaderFeedテーブル名
+    public static final String DB_gReaderFeed_name ="gReaderFeed";
+    public static final String DB_gReaderFeed_item_id_name ="_id";
+    public static final String DB_gReaderFeed_item_feed_name ="feed";
+    public static final String DB_gReaderFeed_item_cut_name ="cut";
+    public static final String DB_gReaderFeed_item_title_name ="title";
+    public static final String DB_gReaderFeed_item_name_name ="name";
+    public static final String DB_gReaderFeed_item_enc_name ="enc";
+    public static final String DB_gReaderFeed_item_type_name ="type";
+    public static final String DB_gReaderFeed_item_url_name ="url";
+    public static final String DB_gReaderFeed_item_xpath_name ="xpath";
+
 
 
 }

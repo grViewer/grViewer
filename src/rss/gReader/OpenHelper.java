@@ -21,55 +21,58 @@ public class OpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		// table create
 		db.execSQL(
-			"create table IF NOT EXISTS gReaderItem("+
-			"	_id integer primary key autoincrement,"+
-			"	itemId text ,"+
-			"	itemPublished text,"+
-			"	itemTitle text,"+
-			"	itemLink text,"+
-			"	itemSummary text,"+
-			"	feed text,"+
-			"	title text,"+
-			"	link text,"+
-			"	read text,"+
-			"	star text,"+
-			"	lock text"+
-			");"
-		);
-		// table create
-		db.execSQL(
-			"create table IF NOT EXISTS gReaderInfo("+
-			"	_id integer primary key autoincrement,"+
-			"	userId text,"+
-			"	lastUpdate text" +
-			");"
-		);
-		db.execSQL("insert into gReaderInfo(lastUpdate) values ('0');");
-
-		// table create
-		db.execSQL(
-			"create table IF NOT EXISTS gReaderLDRFullFeed("+
-			"	_id integer primary key autoincrement,"+
-			"	name text,"+
-			"	enc text,"+
-			"	type text,"+
-			"	url text,"+
-			"	xpath text" +
-			");"
-		);
-		db.execSQL(
-				"create table IF NOT EXISTS gReaderFeed("+
-				"	_id integer primary key autoincrement,"+
-				"	feed text,"+
-				"	cut text,"+
-				"	title text,"+
-				"	name text,"+
-				"	enc text,"+
-				"	type text,"+
-				"	url text,"+
-				"	xpath text" +
+				"create table IF NOT EXISTS " + Constants.DB_gReaderItem_name + "("+
+					  Constants.DB_gReaderItem_item_id_name + Constants.Space + Constants.DB_integer_PK_autoincrement +
+				"," + Constants.DB_gReaderItem_item_itemId_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_itemPublished_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_itemTitle_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_itemLink_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_itemSummary_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_feed_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_title_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_link_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_read_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_star_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderItem_item_lock_name + Constants.Space + Constants.DB_type_text +
 				");"
 			);
+			// table create
+			db.execSQL(
+				"create table IF NOT EXISTS " + Constants.DB_gReaderInfo_name + "("+
+					  Constants.DB_gReaderInfo_item_id_name + Constants.Space + Constants.DB_integer_PK_autoincrement +
+				"," + Constants.DB_gReaderInfo_item_userId_name + Constants.Space + Constants.DB_type_text +
+				"," + Constants.DB_gReaderInfo_item_lastUpdate_name + Constants.Space + Constants.DB_type_text +
+				");"
+			);
+			db.execSQL("insert into " + Constants.DB_gReaderInfo_name +
+				       				"(" + Constants.DB_gReaderInfo_item_lastUpdate_name + ")" +
+				       " values ('0');");
+
+
+			// table create
+			db.execSQL(
+				"create table IF NOT EXISTS " + Constants.DB_gReaderLDRFullFeed_name + "("+
+						  Constants.DB_gReaderLDRFullFeed_item_id_name + Constants.Space + Constants.DB_integer_PK_autoincrement +
+					"," + Constants.DB_gReaderLDRFullFeed_item_name_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderLDRFullFeed_item_enc_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderLDRFullFeed_item_type_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderLDRFullFeed_item_url_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderLDRFullFeed_item_xpath_name + Constants.Space + Constants.DB_type_text +
+				");"
+			);
+			db.execSQL(
+					"create table IF NOT EXISTS " + Constants.DB_gReaderFeed_name + "("+
+						  Constants.DB_gReaderFeed_item_id_name + Constants.Space + Constants.DB_integer_PK_autoincrement +
+					"," + Constants.DB_gReaderFeed_item_feed_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderFeed_item_cut_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderFeed_item_title_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderFeed_item_name_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderFeed_item_enc_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderFeed_item_type_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderFeed_item_url_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderFeed_item_xpath_name + Constants.Space + Constants.DB_type_text +
+					");"
+				);
 
 	}
 
@@ -77,6 +80,7 @@ public class OpenHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// データベースの変更が生じた場合は、ここに処理を記述する。
         if( oldVersion == 1 && newVersion == 2 ){
+        	/*
     		// table create
     		db.execSQL(
     			"create table IF NOT EXISTS gReaderItem("+
@@ -94,6 +98,7 @@ public class OpenHelper extends SQLiteOpenHelper {
     			"	lock text"+
     			");"
     		);
+*/
         }
 	}
 }

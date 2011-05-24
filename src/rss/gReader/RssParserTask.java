@@ -91,16 +91,16 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
     protected Long doInBackground(String... params) {
     	Long result = null;
         try {
-			Log.d(tag, "GetXml");
-//        	String json = GetXml();
-        	JSONObject rootObject = new JSONObject(GetXml().toString());
+			Log.d(tag, "GetJson");
+//        	String json = GetJson();
+        	JSONObject rootObject = new JSONObject(GetJson().toString());
         	JSONArray  itemArray  = rootObject.getJSONArray("items");
     	    // ProgressDialog の確定（false）／不確定（true）を設定します
             mProgressDialog.setIndeterminate(false);
 	  	    // ProgressDialog の最大値を設定 (水平の時)
         	mProgressDialog.setMax(itemArray.length());
-			Log.d(tag, "SetXml");
-        	SetXml(itemArray);
+			Log.d(tag, "SetJson");
+        	SetJson(itemArray);
         	UpdateInfo(rootObject.getString("updated"));
         	mdb.close();
 
@@ -118,9 +118,11 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
         mProgressDialog.dismiss();
         mActivity.setAdapter();
     }
-	public StringBuilder GetXml(){
+	public StringBuilder GetJson(){
 
-			String url_string = "http://www.google.com/reader/api/0/stream/contents/?xt=user/-/state/com.google/read&n=500";
+			String url_string = Constants.URL_SEARCH_CONTENTS +
+			                    "?" + Constants.PARAMETER_STATE_FILTER + Constants.VALUE_SEPARATOR + Constants.FILTER_CURRENT_USER_READ +
+			                    "&" + Constants.PARAMETER_NUMBER_OF_RESULTS + Constants.VALUE_SEPARATOR +"500";
 		    HttpClient objHttp = new DefaultHttpClient();
 //		    HttpParams params = objHttp.getParams();
 //		    HttpConnectionParams.setConnectionTimeout(params, 1000); //接続のタイムアウト
@@ -129,7 +131,7 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 		    try {
 		        HttpGet objGet   = new HttpGet(url_string);
 	       		//ヘッダの指定
-		        objGet.setHeader("Authorization", "GoogleLogin auth=" + mAuth);
+		        objGet.setHeader(Constants.AUTHORIZATION_HTTP_HEADER, Constants.GOOGLE_AUTH_KEY  + mAuth);
 		        HttpResponse objResponse = objHttp.execute(objGet);
 				Log.i(tag,"getResponseMessage");
 		        if (objResponse.getStatusLine().getStatusCode() < 400){
@@ -174,7 +176,7 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 		    return null;
 
 	}
-	public void SetXml(JSONArray itemArray){
+	public void SetJson(JSONArray itemArray){
         //トランザクション開始
         mdb.beginTransaction();
 		try{
@@ -186,17 +188,18 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 	        //プリコンパイルステートメント作成
 	        SQLiteStatement stmt =
 	        	mdb.compileStatement("insert into " +
-	        		"gReaderItem(itemId"+
-	        					",itemPublished"+
-	        					",itemTitle"+
-	        					",itemLink"+
-	        					",itemSummary"+
-	        					",feed"+
-	        					",title"+
-	        					",link" +
-	        					",read" +
-	        					",star" +
-	        					",lock" +
+	        		"gReaderItem("+
+	        					 Constants.DB_gReaderItem_item_itemId_name +
+	        					"," + Constants.DB_gReaderItem_item_itemPublished_name +
+	        					"," + Constants.DB_gReaderItem_item_itemTitle_name  +
+	        					"," + Constants.DB_gReaderItem_item_itemLink_name +
+	        					"," + Constants.DB_gReaderItem_item_itemSummary_name +
+	        					"," + Constants.DB_gReaderItem_item_feed_name +
+	        					"," + Constants.DB_gReaderItem_item_title_name +
+	        					"," + Constants.DB_gReaderItem_item_link_name  +
+	        					"," + Constants.DB_gReaderItem_item_read_name  +
+	        					"," + Constants.DB_gReaderItem_item_star_name +
+	        					"," + Constants.DB_gReaderItem_item_lock_name +
 	        					") " +
 	        		"values (?,?,?,?,?,?,?,?,?,?,?);");
 	        int itemArraylength = itemArray.length();
@@ -307,8 +310,8 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 			db.update("person_table", values, "name = ?", new String[]{"本田 圭佑"
 		 */
 		ContentValues values = new ContentValues();
-		values.put("lastUpdate", updated);
-		mdb.update("gReaderInfo", values, null, null);
+		values.put(Constants.DB_gReaderInfo_item_lastUpdate_name, updated);
+		mdb.update(Constants.DB_gReaderInfo_name , values, null, null);
 
 	}
 
