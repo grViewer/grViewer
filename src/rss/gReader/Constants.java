@@ -30,6 +30,8 @@ public final class Constants {
 	public static final String PARAMETER_SHUFFLE_TOKEN = "t";
 	public static final String PARAMETER_NUMBER_OF_RESULTS = "n";
 	public static final String PARAMETER_OUTPUT_FORMAT = "output";
+	public static final String PARAMETER_OUTPUT_FORMAT_XML = PARAMETER_OUTPUT_FORMAT + VALUE_SEPARATOR +"xml";
+	public static final String PARAMETER_OUTPUT_FORMAT_JSON = PARAMETER_OUTPUT_FORMAT + VALUE_SEPARATOR + "json";
 	public static final String PARAMETER_SEARCH_NUMBER_OF_ELEMENTS = "num";
 	public static final String PARAMETER_SEARCH_SOURCE_FEED = "s";
 	public static final String PARAMETER_SEARCH_TERM = "q";
@@ -157,6 +159,7 @@ public final class Constants {
     public static final String DB_gReaderFeed_item_id_name ="_id";
     public static final String DB_gReaderFeed_item_feed_name ="feed";
     public static final String DB_gReaderFeed_item_cut_name ="cut";
+    public static final String DB_gReaderFeed_item_unreadcut_name ="unread_cut";
     public static final String DB_gReaderFeed_item_title_name ="title";
     public static final String DB_gReaderFeed_item_name_name ="name";
     public static final String DB_gReaderFeed_item_enc_name ="enc";

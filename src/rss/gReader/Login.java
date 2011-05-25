@@ -14,11 +14,11 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class Login {
-    private  ItemListActivity mActivity;
+    private  FeedListActivity mActivity;
 	private  final String tag = "Android";
 
     // コンストラクタ
-    public Login(ItemListActivity activity) {
+    public Login(FeedListActivity activity) {
         mActivity = activity;
     }
 	@SuppressWarnings("finally")

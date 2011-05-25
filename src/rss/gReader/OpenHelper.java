@@ -65,6 +65,7 @@ public class OpenHelper extends SQLiteOpenHelper {
 						  Constants.DB_gReaderFeed_item_id_name + Constants.Space + Constants.DB_integer_PK_autoincrement +
 					"," + Constants.DB_gReaderFeed_item_feed_name + Constants.Space + Constants.DB_type_text +
 					"," + Constants.DB_gReaderFeed_item_cut_name + Constants.Space + Constants.DB_type_text +
+					"," + Constants.DB_gReaderFeed_item_unreadcut_name + Constants.Space + Constants.DB_type_text +
 					"," + Constants.DB_gReaderFeed_item_title_name + Constants.Space + Constants.DB_type_text +
 					"," + Constants.DB_gReaderFeed_item_name_name + Constants.Space + Constants.DB_type_text +
 					"," + Constants.DB_gReaderFeed_item_enc_name + Constants.Space + Constants.DB_type_text +

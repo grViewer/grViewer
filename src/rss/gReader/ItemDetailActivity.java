@@ -75,21 +75,22 @@ public class ItemDetailActivity extends Activity{
         final String id = intent.getStringExtra(Constants.DB_gReaderItem_item_id_name);
         final String Auth = intent.getStringExtra(Constants.AUTH);
 
-        Cursor c = db.query("gReaderItem", new String[]{ Constants.DB_gReaderItem_item_id_name
-										        		,Constants.DB_gReaderItem_item_itemId_name
-										        		,"strftime('%Y-%m-%d %H:%M:%S',datetime(" +
-										        		          "datetime(" + Constants.DB_gReaderItem_item_itemPublished_name + ",'unixepoch'), 'localtime')) "+
-										        		          "as " +  Constants.DB_gReaderItem_item_itemPublished_name
-										        		,Constants.DB_gReaderItem_item_itemTitle_name
-										        		,Constants.DB_gReaderItem_item_itemLink_name
-										        		,Constants.DB_gReaderItem_item_itemSummary_name
-										        		,Constants.DB_gReaderItem_item_feed_name
-										        		,Constants.DB_gReaderItem_item_title_name
-										        		,Constants.DB_gReaderItem_item_link_name
-										        		,Constants.DB_gReaderItem_item_read_name
-										        		,Constants.DB_gReaderItem_item_star_name
-										        		,Constants.DB_gReaderItem_item_lock_name
-										        		},
+        Cursor c = db.query("gReaderItem",
+        					new String[]{ Constants.DB_gReaderItem_item_id_name
+							       		,Constants.DB_gReaderItem_item_itemId_name
+							      		,"strftime('%Y-%m-%d %H:%M:%S',datetime(" +
+							       		          "datetime(" + Constants.DB_gReaderItem_item_itemPublished_name + ",'unixepoch'), 'localtime')) "+
+							       		          "as " +  Constants.DB_gReaderItem_item_itemPublished_name
+							       		,Constants.DB_gReaderItem_item_itemTitle_name
+							       		,Constants.DB_gReaderItem_item_itemLink_name
+							       		,Constants.DB_gReaderItem_item_itemSummary_name
+							       		,Constants.DB_gReaderItem_item_feed_name
+							       		,Constants.DB_gReaderItem_item_title_name
+							       		,Constants.DB_gReaderItem_item_link_name
+							       		,Constants.DB_gReaderItem_item_read_name
+							       		,Constants.DB_gReaderItem_item_star_name
+							       		,Constants.DB_gReaderItem_item_lock_name
+							       		},
 				            "_id = ?",
 				            new String[]{String.valueOf(id)},
 				            null, null, null);
