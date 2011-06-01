@@ -36,7 +36,8 @@ public final class Constants {
 	public static final String PARAMETER_SEARCH_SOURCE_FEED = "s";
 	public static final String PARAMETER_SEARCH_TERM = "q";
 	public static final String PARAMETER_STATE_FILTER = "xt";
-	public static final String URL_PROTOCOL = "https://";
+//	public static final String URL_PROTOCOL = "https://";
+	public static final String URL_PROTOCOL = "http://";
 	public static final String URL_GOOGLE = URL_PROTOCOL + "www.google.com";
 	public static final String URL_LOGIN = URL_GOOGLE + "/accounts/ClientLogin";
 	public static final String URL_READER = URL_GOOGLE + "/reader";
@@ -45,8 +46,10 @@ public final class Constants {
 	public static final String URL_LABELS = URL_API + "/tag/list";
 	public static final String URL_TOKEN = URL_API + "/token";
 	public static final String URL_SEARCH_IDS = URL_API + "/search/items/ids";
+//	public static final String URL_SEARCH_CONTENTS =
+//			URL_API + "/stream/items/contents";
 	public static final String URL_SEARCH_CONTENTS =
-			URL_API + "/stream/items/contents";
+		URL_API + "/stream/contents";
 	public static final String URL_SUBSCRIPTION_LIST =
 			URL_API + "/subscription/list";
 	public static final String URL_PREFERENCE_LIST =

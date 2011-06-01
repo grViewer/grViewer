@@ -69,9 +69,7 @@ public class FeedListActivity extends Activity {
         }
     	checkAuth();
         //前回の内容を表示
-        //setAdapter();
-        //タイトルの更新
-        //setTitle();
+        setAdapter();
 
     }
     // MENUボタンを押したときの処理
@@ -174,7 +172,7 @@ public class FeedListActivity extends Activity {
             //
             cursor = db.query(Constants.DB_gReaderFeed_name
             		          ,new String[] { Constants.DB_gReaderFeed_item_id_name
-            		                         ,Constants.DB_gReaderFeed_item_feed_name
+            		                         ,Constants.DB_gReaderFeed_item_title_name
             		                         ,Constants.DB_gReaderFeed_item_unreadcut_name}
             				  ,Constants.DB_gReaderFeed_item_cut_name + "> 0", null, null, null, null);
     				//    							null, null, null, null, "itemPublished desc");
@@ -184,10 +182,12 @@ public class FeedListActivity extends Activity {
     		ListAdapter adapter = new SimpleCursorAdapter(this,
     							R.layout.feed_row,
     							cursor,
-    							new String[] {"title","cut" },
+    							new String[] {Constants.DB_gReaderFeed_item_title_name,Constants.DB_gReaderFeed_item_unreadcut_name },
     							new int[] {   R.id.feed_title,R.id.feed_cut }
     							);
             lv.setAdapter(adapter);
+            //タイトルの更新
+            setTitle();
         }catch(SQLiteException e){
 			Log.d(tag, e.toString());
 			Log.d(tag, e.getMessage());
@@ -208,9 +208,12 @@ public class FeedListActivity extends Activity {
 	}
 	public void setTitle() {
         try {
+            //フィード名称設定
+            TextView mTitle;
+            mTitle = (TextView) findViewById(R.id.title_left_text);
+            mTitle.setText(getString(R.string.app_name));
         	//最終更新日設定
             ReadDB readdb = new ReadDB(db);
-            TextView mTitle;
             mTitle = (TextView) findViewById(R.id.title_right_text);
             mTitle.setText("LastUpdate：" + readdb.Select_lastUpdate_strftime());
         }catch(SQLiteException e){

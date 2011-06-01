@@ -27,7 +27,7 @@ public class ItemListActivity extends Activity{
 	private Cursor cursor;
 	private DtoInflaterGReaderFeed DtoInflaterGReaderFeed = new DtoInflaterGReaderFeed();
     // コンストラクタ
-    public ItemListActivity(String Auth,String title) {
+    public ItemListActivity() {
     }
 
     @Override
@@ -86,12 +86,14 @@ public class ItemListActivity extends Activity{
 	public void setAdapter(String Feed_Id) {
         try {
             //フィード一覧画面で指定されたフィードのアイテム一覧を取得
-            cursor = db.rawQuery("select item._id " +
-            		                    ",item.title,strftime('%m-%d %H:%M',datetime(datetime(item.itemPublished,'unixepoch'), 'localtime')) as itemPublished "+
-            		                    ", item.itemTitle " +
-								  "from gReaderItem item,gReaderFeed feed" +
-								 "where feed._id = ? " +
-								  "and feed._feed = item.feed "
+            cursor = db.rawQuery("select gr_item._id " +
+            		                    ",gr_item.title"+
+            		                    ",strftime('%m-%d %H:%M',datetime(datetime(gr_item.itemPublished,'unixepoch'), 'localtime')) as itemPublished "+
+            		                    ",gr_item.itemTitle " +
+								  " from gReaderItem gr_item"+
+								       ",gReaderFeed gr_feed" +
+								 " where gr_feed._id = ? " +
+								  " and gr_feed.feed = gr_item.feed "
 								  //+"order by itemPublished desc "
 					,new String[]{Feed_Id});
 
@@ -120,6 +122,7 @@ public class ItemListActivity extends Activity{
             		new String[]{ Constants.DB_gReaderItem_item_id_name
             					,Constants.DB_gReaderFeed_item_feed_name
 								,Constants.DB_gReaderFeed_item_cut_name
+								,Constants.DB_gReaderFeed_item_unreadcut_name
 								,Constants.DB_gReaderFeed_item_title_name
 								,Constants.DB_gReaderFeed_item_name_name
 								,Constants.DB_gReaderFeed_item_enc_name
@@ -130,9 +133,12 @@ public class ItemListActivity extends Activity{
 					"_id = ?",
 					new String[]{Feed_Id},
 					null, null, null);
-    		DtoInflaterGReaderFeed = new DtoInflaterGReaderFeed();
-    		if (c.getCount()>0){
+            boolean isEof = c.moveToFirst();
+        	DtoInflaterGReaderFeed = new DtoInflaterGReaderFeed();
+
+    		while (isEof) {
     			DtoInflaterGReaderFeed.setCursor(c);
+    			isEof = c.moveToNext();
     		}
     		c.close();
 

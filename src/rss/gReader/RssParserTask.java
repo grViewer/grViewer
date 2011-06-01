@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
@@ -96,7 +97,7 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 			Log.d(tag, "GetJson");
 			//URLの設定（一覧取得用）
 			String url_ItemList = Constants.URL_SEARCH_CONTENTS +
-							"?" + Constants.PARAMETER_STATE_FILTER + Constants.VALUE_SEPARATOR + Constants.FILTER_CURRENT_USER_READ +
+							"/?" + Constants.PARAMETER_STATE_FILTER + Constants.VALUE_SEPARATOR + Constants.FILTER_CURRENT_USER_READ +
 							"&" + Constants.PARAMETER_NUMBER_OF_RESULTS + Constants.VALUE_SEPARATOR +"500";
 			//一覧の取得
 			JSONObject rootObject = new JSONObject(GetJson(url_ItemList).toString());
@@ -109,18 +110,13 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 			Log.d(tag, "SetJson");
 			//一覧の登録
         	SetItemList(itemArrayItemList);
-
-        	//URLの設定（登録フィード一覧取得用）
-			String url_LabelList = Constants.URL_SUBSCRIPTION_LIST +
-								"?" + Constants.PARAMETER_OUTPUT_FORMAT_JSON;
-
-        	//登録フィード一覧の取得
-			JSONArray  itemArrayLabel  = rootObject.getJSONArray(GetJson(url_LabelList).toString());
-        	//登録フィード一覧の登録
-        	SetLabelList(itemArrayLabel);
-
+			Log.d(tag, "UpdateInfo");
         	//最終更新日の設定
         	UpdateInfo(rootObject.getString("updated"));
+        	//登録フィード一覧の登録
+			Log.d(tag, "SetLabelList");
+        	SetLabelList();
+
         	//DBクローズ
         	mdb.close();
 
@@ -181,12 +177,10 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
         //トランザクション開始
         mdb.beginTransaction();
 		try{
-			//既読分だけ削除とか？？？
-			//mdb.delete("gReaderItem", "itemPublished <= ?", published);
 			//既読分だけ削除
-			mdb.delete("gReaderItem","read='1' and star='0' and lock ='0'",null);
+			//mdb.delete("gReaderItem","read='1' and star='0' and lock ='0'",null);
 			//全件削除
-			//mdb.delete("gReaderItem",null,null);
+			mdb.delete("gReaderItem",null,null);
 	        //プリコンパイルステートメント作成
 	        SQLiteStatement stmt =
 	        	mdb.compileStatement("insert into " +
@@ -211,10 +205,16 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 		        try {
 
 					itemObject = itemArray.getJSONObject(textList_count);
-		            //記事タイトル
-					String Title = itemObject.getString("title");
+
+					//記事タイトル
+					String itemTitle;
+					if (itemObject.has("title")) {
+						itemTitle = itemObject.getString("title");
+					}else{
+						itemTitle = "PR:";
+					}
 					//広告を除く
-					if ((Title.indexOf("PR:",0) == -1) && (Title.indexOf("AD:",0) == -1)) {
+					if ((itemTitle.indexOf("PR:",0) == -1) && (itemTitle.indexOf("AD:",0) == -1)) {
 
 			            //ID
 						String itemId = itemObject.getString("id");
@@ -223,7 +223,7 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 
 						//記事URL
 			        	JSONArray  alternateArray  = itemObject.getJSONArray("alternate");
-						String itemTitle = alternateArray.getJSONObject(0).getString("href");
+						String itemLink = alternateArray.getJSONObject(0).getString("href");
 
 						//RSSの種類により取得する項目を可変
 						JSONObject SummaryObject;
@@ -250,8 +250,8 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 							// SQLの処理
 							stmt.bindString(1, itemId);
 							stmt.bindString(2, itemPublished);
-							stmt.bindString(3, Title);
-							stmt.bindString(4, itemTitle);
+							stmt.bindString(3, itemTitle);
+							stmt.bindString(4, itemLink);
 							stmt.bindString(5, itemSummary);
 							stmt.bindString(6, feed);
 							stmt.bindString(7, title);
@@ -300,104 +300,92 @@ public class RssParserTask extends AsyncTask<String, Integer, Long>{
 		}
 	}
 	//フィードの更新
-	public void SetLabelList(JSONArray itemArray){
+	public void SetLabelList(){
         //トランザクション開始
         mdb.beginTransaction();
 		try{
+			Log.d(tag, "WriteDB");
 			//件数を初期化
 			WriteDB writedb = new WriteDB(mdb);
+			Log.d(tag, "Update_gReaderFeed_cut_Refresh");
 			writedb.Update_gReaderFeed_cut_Refresh();
+			Log.d(tag, "rawQuery");
+			Cursor c = mdb.rawQuery("select i.feed,i.title,count(i._id) as cut," +
+					                       "count(i._id) - sum(i.read) as unread_cut ,ifnull(f.feed,0) fe " +
+					                 "from gReaderItem i left join gReaderFeed f on (i.feed = f.feed) "+
+					                 "group by i.feed,i.title,ifnull(f.feed,0)  ",null);
+			Log.d(tag, "moveToFirst");
+			boolean isEof = c.moveToFirst();
 
-	        int itemArraylength = itemArray.length();
-	        JSONObject itemObject;
-	        for(textList_count = 0; textList_count < itemArraylength ;textList_count++){
-	        	itemObject = null;
-		        try {
+			Log.d(tag, "while");
+			while (isEof) {
 
-					itemObject = itemArray.getJSONObject(textList_count);
-		            //ID
-					String itemId = itemObject.getString("id");
-		            //記事タイトル
-					String Title = itemObject.getString("title");
-					//広告を除く
-					if ((Title.indexOf("PR:",0) == -1) && (Title.indexOf("AD:",0) == -1)) {
+				//フィード
+				String feed = c.getString(0);
+				Log.d(tag, feed);
+	            //サイトタイトル
+				String title = c.getString(1);
+				Log.d(tag, title);
+	            //総件数
+				String cut = c.getString(2);
+				Log.d(tag, cut);
+	            //未読件数
+				String unread_cut = c.getString(3);
+				Log.d(tag, unread_cut);
+	            //登録有無フラグ
+				String fe = c.getString(4);
+				Log.d(tag, fe);
+				try {
+					if (fe.equals("0")) {
+						Log.d(tag, "登録");
+						Log.d(tag, "insert into " + Constants.DB_gReaderFeed_name +
+			       				"(" + 	Constants.DB_gReaderFeed_item_feed_name +
+			       				"," + 	Constants.DB_gReaderFeed_item_cut_name +
+			       				"," + 	Constants.DB_gReaderFeed_item_unreadcut_name +
+			       				"," + 	Constants.DB_gReaderFeed_item_title_name +
+			       				")" +
+			       				" values +" +
+			       				"(" + feed +
+			       				"," + cut +
+			       				"," + unread_cut +
+			       				"," + title +
+			       				");");
+						//登録
+						mdb.execSQL("insert into " + Constants.DB_gReaderFeed_name +
+			       				"(" + 	Constants.DB_gReaderFeed_item_feed_name +
+			       				"," + 	Constants.DB_gReaderFeed_item_cut_name +
+			       				"," + 	Constants.DB_gReaderFeed_item_unreadcut_name +
+			       				"," + 	Constants.DB_gReaderFeed_item_title_name +
+			       				")" +
+			       				" values " +
+			       				"('" + feed + "'" +
+			       				",'" + cut + "'" +
+			       				",'" + unread_cut + "'" +
+			       				",'" + title + "'" +
+			       				");");
 
-			            //更新時間
-						String itemPublished = itemObject.getString("published");
-
-						//記事URL
-			        	JSONArray  alternateArray  = itemObject.getJSONArray("alternate");
-						String itemTitle = alternateArray.getJSONObject(0).getString("href");
-
-						//RSSの種類により取得する項目を可変
-						JSONObject SummaryObject;
-						if (itemObject.has("summary")) {
-							SummaryObject = itemObject.getJSONObject("summary");
-						}else{
-							SummaryObject = itemObject.getJSONObject("content");
-						}
-
-						//概要
-						String itemSummary = SummaryObject.getString("content");
-						if (itemSummary.isEmpty()) itemSummary = "概要なし";
-
-						JSONObject originObject = itemObject.getJSONObject("origin");
-						//フィード
-						String feed = originObject.getString("streamId");
-			            //サイトタイトル
-						String title = originObject.getString("title");
-			            //サイトURL
-						String link = originObject.getString("htmlUrl");
-	//					Log.i(tag,dtoHoge.getTitle());
-	//					Log.i(tag,Summary);
-						try {
-/*
-							// SQLの処理
-							stmt.bindString(1, itemId);
-							stmt.bindString(2, itemPublished);
-							stmt.bindString(3, Title);
-							stmt.bindString(4, itemTitle);
-							stmt.bindString(5, itemSummary);
-							stmt.bindString(6, feed);
-							stmt.bindString(7, title);
-							stmt.bindString(8, link);
-							stmt.bindString(9, "0");
-							stmt.bindString(10, "0");
-							stmt.bindString(11, "0");
-							stmt.execute();
-*/
-							//挿入された行のIDを取得する場合・・・
-							//long id = stmt.executeInsert();
-
-				        }catch(SQLiteException e){
-							Log.d(tag, e.toString());
-							Log.d(tag, e.getMessage());
-							Log.d(tag, "SQLiteException ng");
-						}
 					}else{
-/*
-						//広告は別スレッドで既読に
-			            //ID
-						final String itemId = itemObject.getString("id");
-						//フィード
-						JSONObject originObject = itemObject.getJSONObject("origin");
-						final String feed = originObject.getString("streamId");
-				    	//別スレッドで既読に変更
-						new Thread() {
-
-				        	public void run() {
-				    			Edit Edit = new Edit(feed,itemId,mAuth);
-				    	    	Edit.MarkRead();
-				        	}
-				        }.start();
-*/
+						Log.d(tag, "更新");
+						//更新
+						//パラメータの設定
+						ContentValues values = new ContentValues();
+						values.put(Constants.DB_gReaderFeed_item_cut_name, cut);
+						values.put(Constants.DB_gReaderFeed_item_unreadcut_name, unread_cut);
+						//SQLの実行
+						mdb.update(Constants.DB_gReaderFeed_name ,
+									values,
+									Constants.DB_gReaderFeed_item_feed_name + " = ?",
+									new String[]{feed});
 					}
-		        }catch (JSONException e1) {
-						// TODO 自動生成された catch ブロック
-						e1.printStackTrace();
-					}
+		        }catch(SQLiteException e){
+					Log.d(tag, e.toString());
+					Log.d(tag, e.getMessage());
+					Log.d(tag, "SQLiteException ng");
+				}
 
-	        }
+				isEof = c.moveToNext();
+			}
+			c.close();
 	        //トランザクション・コミット
 		    mdb.setTransactionSuccessful();
 		} finally {

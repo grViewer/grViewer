@@ -11,6 +11,7 @@ public class DtoInflaterGReaderFeed implements Serializable{
     private String _id;
     private String feed;
     private String cut;
+    private String unread_cut;
     private String name;
 	private String enc;
     private String type;
@@ -23,6 +24,7 @@ public class DtoInflaterGReaderFeed implements Serializable{
         _id = null;
         feed = null;
         cut = null;
+        unread_cut = null;
         name = null;
         enc = null;
         type = null;
@@ -38,6 +40,9 @@ public class DtoInflaterGReaderFeed implements Serializable{
 
     public String getCut() {return cut;}
     public void setCut(String cut) {this.cut = cut;}
+
+    public String getUnread_Cut() {return unread_cut;}
+    public void setUnread_Cut(String unread_cut) {this.unread_cut = unread_cut;}
 
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
@@ -64,6 +69,7 @@ public class DtoInflaterGReaderFeed implements Serializable{
     	set_id(c.getString(c.getColumnIndexOrThrow(Constants.DB_gReaderFeed_item_id_name)));
     	setFeed(c.getString(c.getColumnIndexOrThrow(Constants.DB_gReaderFeed_item_feed_name)));
     	setCut(c.getString(c.getColumnIndexOrThrow(Constants.DB_gReaderFeed_item_cut_name)));
+    	setUnread_Cut(c.getString(c.getColumnIndexOrThrow(Constants.DB_gReaderFeed_item_unreadcut_name)));
     	setName(c.getString(c.getColumnIndexOrThrow(Constants.DB_gReaderFeed_item_name_name)));
     	setEnc(c.getString(c.getColumnIndexOrThrow(Constants.DB_gReaderFeed_item_enc_name)));
     	setType(c.getString(c.getColumnIndexOrThrow(Constants.DB_gReaderFeed_item_type_name)));

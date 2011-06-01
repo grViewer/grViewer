@@ -137,7 +137,7 @@ public class ItemDetailActivity extends Activity{
 		}
 		//本文が取得できなかった場合は概要をセット
         if (Summary.isEmpty()){
-        	Summary = intent.getStringExtra("itemSummary");
+        	Summary = DtoInflaterGReaderItem.getItemSummary();
         	if (Summary.isEmpty()){
         		Summary="本文を配信または取得できないサイトです。";
 	        }
